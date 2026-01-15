@@ -73,6 +73,11 @@ button{
   margin-top:16px;
 }
 
+#rekapProgram h3{
+  margin-top:0;
+}
+
+
 /* ================= CHECKBOX CARD ================= */
 .checkbox-row{
   display:grid;
@@ -316,11 +321,24 @@ th{background:#f1f5ff}
   </div>
 
   <div class="summary" id="kesimpulan"></div>
+  <div id="rekapProgram" class="section hidden">
+  <h3>Rekap Iuran per Program</h3>
+
+  <div class="table-wrap">
+    <table id="tabelRekap">
+      <tr>
+        <th>Program</th>
+        <th id="colPU">PU</th>
+        <th id="colBPU">BPU</th>
+        <th>Total</th>
+      </tr>
+    </table>
+  </div>
+</div>
 </div>
 
 <div class="footer">
   <h4>Skema Iuran</h4>
-
   <div class="table-wrap footer-table">
     <table>
       <tr><th>Program</th><th>PU</th><th>BPU</th></tr>
@@ -419,6 +437,7 @@ tujuan.onchange=()=>{
 
 /* ================= HITUNG ================= */
 function hitungSasaran(){
+  
   tabel.innerHTML=tabel.rows[0].outerHTML;
   let total=0;
 
@@ -437,6 +456,34 @@ function hitungSasaran(){
 
   tabel.innerHTML+=`<tr><th colspan="4">TOTAL</th><th>Rp ${format(total)}</th></tr>`;
   kesimpulan.innerHTML=`Hasil simulasi menunjukkan kebutuhan anggaran sebesar <b>Rp ${format(total)}</b> untuk mendukung perlindungan jaminan sosial ketenagakerjaan sesuai skema yang dipilih.`;
+  
+  let rekapPU = {};
+let rekapBPU = {};
+
+// PU
+if(s_nonasn.checked){
+  let up = getNum('upahS');
+  let org = getNum('orgSNon');
+  let bln = getNum('blnSNon');
+
+  rekapPU.JKK = up * 0.0024 * org * bln;
+  rekapPU.JKM = up * 0.003 * org * bln;
+  if(jhtSNon.checked) rekapPU.JHT = up * 0.057 * org * bln;
+  if(jpSNon.checked) rekapPU.JP  = up * 0.03  * org * bln;
+}
+
+// BPU
+if(s_bpu.checked){
+  let org = getNum('orgSBPU');
+  let bln = getNum('blnSBPU');
+
+  rekapBPU.JKK = 16800 * org * bln;
+  if(jhtSBPU.checked) rekapBPU.JHT = 20000 * org * bln;
+}
+
+tampilkanRekap({ pu: rekapPU, bpu: rekapBPU });
+
+  
   hasil.classList.remove('hidden');
 }
 
@@ -476,6 +523,57 @@ function hitungAnggaran(){
   tabel.innerHTML+=`<tr><th colspan="4">SISA ANGGARAN</th><th>Rp ${format(sisa)}</th></tr>`;
   kesimpulan.innerHTML=`Simulasi ini menunjukkan optimalisasi pemanfaatan anggaran. Total anggaran <b>Rp ${format(ang)}</b> digunakan sebesar <b>Rp ${format(total)}</b> dengan sisa <b>Rp ${format(sisa)}</b>.`;
   hasil.classList.remove('hidden');
+}
+
+function tampilkanRekap({pu={}, bpu={}}){
+  tabelRekap.innerHTML = `
+    <tr>
+      <th>Program</th>
+      <th id="colPU">PU</th>
+      <th id="colBPU">BPU</th>
+      <th>Total</th>
+    </tr>
+  `;
+
+  const program = ['JKK','JKM','JHT','JP'];
+  let grandTotal = 0;
+
+  program.forEach(p=>{
+    let valPU = pu[p] || 0;
+    let valBPU = bpu[p] || 0;
+    let total = valPU + valBPU;
+    grandTotal += total;
+
+    tabelRekap.innerHTML += `
+      <tr>
+        <td>${p}</td>
+        <td>${valPU ? 'Rp ' + format(valPU) : '-'}</td>
+        <td>${valBPU ? 'Rp ' + format(valBPU) : '-'}</td>
+        <td><b>Rp ${format(total)}</b></td>
+      </tr>
+    `;
+  });
+
+ let colSpanTotal = 1;
+if(Object.keys(pu).length > 0) colSpanTotal++;
+if(Object.keys(bpu).length > 0) colSpanTotal++;
+
+tabelRekap.innerHTML += `
+  <tr>
+    <th colspan="${colSpanTotal}">TOTAL</th>
+    <th>Rp ${format(grandTotal)}</th>
+  </tr>
+`;
+
+  // hide kolom PU / BPU jika tidak dipilih
+  if(Object.keys(pu).length === 0){
+    document.querySelectorAll('#colPU, #tabelRekap td:nth-child(2)').forEach(e=>e.style.display='none');
+  }
+  if(Object.keys(bpu).length === 0){
+    document.querySelectorAll('#colBPU, #tabelRekap td:nth-child(3)').forEach(e=>e.style.display='none');
+  }
+
+  rekapProgram.classList.remove('hidden');
 }
 
 function resetSimulasi(){
