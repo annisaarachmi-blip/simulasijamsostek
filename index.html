@@ -488,42 +488,113 @@ tampilkanRekap({ pu: rekapPU, bpu: rekapBPU });
 }
 
 function hitungAnggaran(){
-  tabel.innerHTML=tabel.rows[0].outerHTML;
-  let ang=getNum('totalAnggaran');
-  let bagian=(a_nonasn.checked&&a_bpu.checked)?ang/2:ang;
-  let total=0;
 
+  tabel.innerHTML = tabel.rows[0].outerHTML;
+  let ang = getNum('totalAnggaran');
+  let bagian = (a_nonasn.checked && a_bpu.checked) ? ang/2 : ang;
+  let total = 0;
+
+  let rekapPU = {};
+  let rekapBPU = {};
+
+  /* ================= PU ================= */
   if(a_nonasn.checked){
-    let up=getNum('upahA'),org=getNum('orgA'),bln=getNum('blnA');
-    let tarif=0.0054+(jhtA.checked?0.057:0)+(jpA.checked?0.03:0);
+    let up = getNum('upahA');
+    let org = getNum('orgA');
+    let bln = getNum('blnA');
 
-    if(tujuan.value==='orang'){
-      let per=up*tarif*bln,orang=Math.floor(bagian/per),sub=orang*per;total+=sub;
-      tabel.innerHTML+=`<tr><td>PU</td><td>${format(orang)}</td><td>${format(bln)}</td><td>Rp ${format(up*tarif)}</td><td>Rp ${format(sub)}</td></tr>`;
+    let tarifJKK = 0.0024;
+    let tarifJKM = 0.003;
+    let tarifJHT = jhtA.checked ? 0.057 : 0;
+    let tarifJP  = jpA.checked  ? 0.03  : 0;
+
+    let tarifTotal = tarifJKK + tarifJKM + tarifJHT + tarifJP;
+
+    if(tujuan.value === 'orang'){
+      let biayaPerOrg = up * tarifTotal * bln;
+      org = Math.floor(bagian / biayaPerOrg);
     }else{
-      let per=up*tarif*org,bulan=Math.floor(bagian/per),sub=bulan*per;total+=sub;
-      tabel.innerHTML+=`<tr><td>PU</td><td>${format(org)}</td><td>${format(bulan)}</td><td>Rp ${format(up*tarif)}</td><td>Rp ${format(sub)}</td></tr>`;
+      let biayaPerBln = up * tarifTotal * org;
+      bln = Math.floor(bagian / biayaPerBln);
     }
+
+    let sub = up * tarifTotal * org * bln;
+    total += sub;
+
+    /* 🔹 REKAP PU */
+    rekapPU.JKK = up * tarifJKK * org * bln;
+    rekapPU.JKM = up * tarifJKM * org * bln;
+    if(jhtA.checked) rekapPU.JHT = up * tarifJHT * org * bln;
+    if(jpA.checked)  rekapPU.JP  = up * tarifJP  * org * bln;
+
+    tabel.innerHTML += `
+      <tr>
+        <td>PU</td>
+        <td>${format(org)}</td>
+        <td>${format(bln)}</td>
+        <td>Rp ${format(up * tarifTotal)}</td>
+        <td>Rp ${format(sub)}</td>
+      </tr>
+    `;
   }
 
+  /* ================= BPU ================= */
   if(a_bpu.checked){
-    let org=getNum('orgB'),bln=getNum('blnB');
-    let per=16800+(jhtB.checked?20000:0);
+    let org = getNum('orgB');
+    let bln = getNum('blnB');
 
-    if(tujuan.value==='orang'){
-      let perOrg=per*bln,orang=Math.floor(bagian/perOrg),sub=orang*perOrg;total+=sub;
-      tabel.innerHTML+=`<tr><td>BPU</td><td>${format(orang)}</td><td>${format(bln)}</td><td>Rp ${format(per)}</td><td>Rp ${format(sub)}</td></tr>`;
+    let tarifJKKJKM = 16800;
+    let tarifJHT = jhtB.checked ? 20000 : 0;
+    let tarifTotal = tarifJKKJKM + tarifJHT;
+
+    if(tujuan.value === 'orang'){
+      org = Math.floor(bagian / (tarifTotal * bln));
     }else{
-      let perOrg=per*org,bulan=Math.floor(bagian/perOrg),sub=bulan*perOrg;total+=sub;
-      tabel.innerHTML+=`<tr><td>BPU</td><td>${format(org)}</td><td>${format(bulan)}</td><td>Rp ${format(per)}</td><td>Rp ${format(sub)}</td></tr>`;
+      bln = Math.floor(bagian / (tarifTotal * org));
     }
+
+    let sub = tarifTotal * org * bln;
+    total += sub;
+
+    /* 🔹 REKAP BPU */
+    rekapBPU.JKK = tarifJKKJKM * org * bln;
+    if(jhtB.checked) rekapBPU.JHT = tarifJHT * org * bln;
+
+    tabel.innerHTML += `
+      <tr>
+        <td>BPU</td>
+        <td>${format(org)}</td>
+        <td>${format(bln)}</td>
+        <td>Rp ${format(tarifTotal)}</td>
+        <td>Rp ${format(sub)}</td>
+      </tr>
+    `;
   }
 
-  let sisa=ang-total;
-  tabel.innerHTML+=`<tr><th colspan="4">SISA ANGGARAN</th><th>Rp ${format(sisa)}</th></tr>`;
-  kesimpulan.innerHTML=`Simulasi ini menunjukkan optimalisasi pemanfaatan anggaran. Total anggaran <b>Rp ${format(ang)}</b> digunakan sebesar <b>Rp ${format(total)}</b> dengan sisa <b>Rp ${format(sisa)}</b>.`;
+  let sisa = ang - total;
+
+  tabel.innerHTML += `
+    <tr>
+      <th colspan="4">SISA ANGGARAN</th>
+      <th>Rp ${format(sisa)}</th>
+    </tr>
+  `;
+
+  kesimpulan.innerHTML = `
+    Total anggaran <b>Rp ${format(ang)}</b>,
+    digunakan <b>Rp ${format(total)}</b>,
+    sisa <b>Rp ${format(sisa)}</b>.
+  `;
+
+  /* 🔥 INI KUNCI REKAP */
+  tampilkanRekap({
+    pu: rekapPU,
+    bpu: rekapBPU
+  });
+
   hasil.classList.remove('hidden');
 }
+
 
 function tampilkanRekap({pu={}, bpu={}}){
   tabelRekap.innerHTML = `
@@ -582,5 +653,4 @@ function resetSimulasi(){
 </script>
 </body>
 </html>
-
 
