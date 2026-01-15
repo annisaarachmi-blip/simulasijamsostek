@@ -158,6 +158,7 @@ th{background:#f1f5ff}
 
 /* ================= FOOTER TABLE MOBILE ================= */
 .footer-table table{
+  margin-top:0;
   min-width:auto; /* override */
 }
 
@@ -167,11 +168,13 @@ th{background:#f1f5ff}
     font-size:12px;
     padding:6px;
   }
+  
 
-  .footer h4{
-    font-size:15px;
-    margin-bottom:6px;
-  }
+ .footer h4{
+  margin-bottom:6px;
+  padding-bottom:4px;
+  border-bottom:1px solid #e5e7eb;
+}
 
   .footer h5{
     font-size:12px;
@@ -450,7 +453,8 @@ function hitungSasaran(){
 
   if(s_bpu.checked){
     let org=getNum('orgSBPU'),bln=getNum('blnSBPU');
-    let per=16800+(jhtSBPU.checked?20000:0),sub=per*org*bln;total+=sub;
+    let per=16800+(jhtSBPU.checked?20000:0),sub=per*org*bln;
+	total+=sub;
     tabel.innerHTML+=`<tr><td>BPU</td><td>${format(org)}</td><td>${format(bln)}</td><td>Rp ${format(per)}</td><td>Rp ${format(sub)}</td></tr>`;
   }
 
@@ -477,7 +481,8 @@ if(s_bpu.checked){
   let org = getNum('orgSBPU');
   let bln = getNum('blnSBPU');
 
-  rekapBPU.JKK = 16800 * org * bln;
+  rekapBPU.JKK = 10000 * org * bln;
+  rekapBPU.JKM = 6800  * org * bln;
   if(jhtSBPU.checked) rekapBPU.JHT = 20000 * org * bln;
 }
 
@@ -543,9 +548,10 @@ function hitungAnggaran(){
     let org = getNum('orgB');
     let bln = getNum('blnB');
 
-    let tarifJKKJKM = 16800;
-    let tarifJHT = jhtB.checked ? 20000 : 0;
-    let tarifTotal = tarifJKKJKM + tarifJHT;
+    let tarifJKK = 10000;
+	let tarifJKM = 6800;
+	let tarifJHT = jhtB.checked ? 20000 : 0;
+	let tarifTotal = tarifJKK + tarifJKM + tarifJHT;
 
     if(tujuan.value === 'orang'){
       org = Math.floor(bagian / (tarifTotal * bln));
@@ -557,8 +563,9 @@ function hitungAnggaran(){
     total += sub;
 
     /* 🔹 REKAP BPU */
-    rekapBPU.JKK = tarifJKKJKM * org * bln;
-    if(jhtB.checked) rekapBPU.JHT = tarifJHT * org * bln;
+   rekapBPU.JKK = 10000 * org * bln;
+rekapBPU.JKM = 6800  * org * bln;
+if(jhtB.checked) rekapBPU.JHT = 20000 * org * bln;
 
     tabel.innerHTML += `
       <tr>
@@ -571,14 +578,23 @@ function hitungAnggaran(){
     `;
   }
 
-  let sisa = ang - total;
+let sisa = ang - total;
 
-  tabel.innerHTML += `
-    <tr>
-      <th colspan="4">SISA ANGGARAN</th>
-      <th>Rp ${format(sisa)}</th>
-    </tr>
-  `;
+/* BARIS TOTAL */
+tabel.innerHTML += `
+  <tr>
+    <th colspan="4">TOTAL</th>
+    <th>Rp ${format(total)}</th>
+  </tr>
+`;
+
+/* BARIS SISA ANGGARAN */
+tabel.innerHTML += `
+  <tr>
+    <th colspan="4">SISA ANGGARAN</th>
+    <th>Rp ${format(sisa)}</th>
+  </tr>
+`;
 
   kesimpulan.innerHTML = `
     Total anggaran <b>Rp ${format(ang)}</b>,
