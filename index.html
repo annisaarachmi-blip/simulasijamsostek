@@ -180,10 +180,11 @@ th{background:#f1f5ff}
 /* ================= RESPONSIF MOBILE ================= */
 @media (max-width: 600px) {
   #hasil, #rekapProgram {
-    width: 100%;       /* penuh di mobile */
-    padding: 12px;     /* lebih kecil agar muat */
-    margin-left: 0;    /* rata kiri */
-    margin-right: 0;   /* rata kiri */
+    width: calc(100% - 20px); /* full width minus padding container */
+    padding: 12px;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;   /* penting agar border & padding tidak bikin overflow */
   }
 }
 
