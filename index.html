@@ -150,6 +150,7 @@ th{background:#f1f5ff}
   .checkbox-row{grid-template-columns:1fr}
   h2{font-size:20px}
 }
+
 /* ================= FOOTER TABLE MOBILE ================= */
 .footer-table table{
   min-width:auto; /* override */
@@ -295,6 +296,7 @@ th{background:#f1f5ff}
   </div>
 
   <button onclick="hitungAnggaran()">Hitung</button>
+  <button type="button" class="btn-reset" onclick="resetSimulasi()">Reset</button>
 </div>
 
 <!-- ================= HASIL ================= -->
@@ -315,15 +317,20 @@ th{background:#f1f5ff}
 
   <div class="summary" id="kesimpulan"></div>
 </div>
+
 <div class="footer">
   <h4>Skema Iuran</h4>
-  <table>
-    <tr><th>Program</th><th>PU</th><th>BPU</th></tr>
-    <tr><td>JKK + JKM</td><td>0,54% Upah</td><td>Rp16.800</td></tr>
-    <tr><td>JHT</td><td>5,7% Upah</td><td>Rp20.000</td></tr>
-    <tr><td>JP</td><td>3% Upah</td><td>-</td></tr>
-  </table>
-  <H5>Minimal 2 Program Wajib (JKK+JKM)
+
+  <div class="table-wrap footer-table">
+    <table>
+      <tr><th>Program</th><th>PU</th><th>BPU</th></tr>
+      <tr><td>JKK + JKM</td><td>0,54% Upah</td><td>Rp16.800</td></tr>
+      <tr><td>JHT</td><td>5,7% Upah</td><td>Rp20.000</td></tr>
+      <tr><td>JP</td><td>3% Upah</td><td>-</td></tr>
+    </table>
+  </div>
+
+  <h5 style="margin-top:8px">Minimal 2 Program Wajib (JKK + JKM)</h5>
 </div>
 
 <div class="footer-note">© 2026. BPJS Ketenagakerjaan Kantor Wilayah Jawa Timur</div>
