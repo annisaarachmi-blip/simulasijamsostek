@@ -168,7 +168,6 @@ th{background:#f1f5ff}
 
 /* ================= REKAP IURAN PER PROGRAM ================= */
 #rekapProgram {
-  
   padding: 16px;             /* ruang di dalam kotak */
   border-radius: 14px;       /* sudut bulat */
   background: #fff;          /* latar putih */
@@ -177,6 +176,15 @@ th{background:#f1f5ff}
   max-width: 900px;          /* maksimal lebar */
   min-height: 200px;         /* tinggi minimal kotak */
   margin: 14px 0;            /* atas & bawah ada jarak, kiri kanan 0 = kiri */
+}
+/* ================= RESPONSIF MOBILE ================= */
+@media (max-width: 600px) {
+  #hasil, #rekapProgram {
+    width: 100%;       /* penuh di mobile */
+    padding: 12px;     /* lebih kecil agar muat */
+    margin-left: 0;    /* rata kiri */
+    margin-right: 0;   /* rata kiri */
+  }
 }
 
 
