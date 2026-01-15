@@ -159,6 +159,26 @@ th{background:#f1f5ff}
   h2{font-size:20px}
 }
 
+/* ================= HASIL SIMULASI & REKAP ================= */
+#hasil {
+  border: 2px solid #000;   /* ⬅️ border hitam tebal */
+  padding: 12px;            /* tetap nyaman di dalam */
+  border-radius: 14px;      /* sudut bulat */
+}
+
+/* ================= REKAP IURAN PER PROGRAM ================= */
+#rekapProgram {
+  
+  padding: 16px;             /* ruang di dalam kotak */
+  border-radius: 14px;       /* sudut bulat */
+  background: #fff;          /* latar putih */
+  width: 80%;                /* lebar kotak */
+  min-width: 400px;          /* minimal lebar supaya tabel muat */
+  max-width: 900px;          /* maksimal lebar */
+  min-height: 200px;         /* tinggi minimal kotak */
+  margin: 14px 0;            /* atas & bawah ada jarak, kiri kanan 0 = kiri */
+}
+
 
 
 /* ================= FOOTER TABLE MOBILE ================= */
@@ -260,11 +280,15 @@ th{background:#f1f5ff}
 <body>
 <div class="container">
 
-<h2>Simulasi Penganggaran<br>Jaminan Sosial Ketenagakerjaan</h2>
-
+<h2>Simulasi Penganggaran Iuran Jaminan Sosial Ketenagakerjaan</h2>
+<p style="text-align: justify"><font size="2px">Simulasi ini dapat digunakan oleh Pemerintah Daerah
+	untuk membantu perencanaan dan estimasi kebutuhan anggaran perlindungan
+	Jaminan Sosial Ketenagakerjaan berdasarkan jenis sasaran, jumlah peserta,
+	lama perlindungan, dan program yang dipilih. Dapat digunakan juga oleh Perusahaan untuk ikut serta dalam Program Sejahterakan Pekerja Sekitar Anda (SERTAKAN).
+ </font></p
 <!-- ================= METODE ================= -->
 <div class="section">
-  <label>Metode Simulasi</label>
+  <label><b>Metode Simulasi</b></label>
   <select id="metode">
     <option value="">-- Pilih Metode --</option>
     <option value="sasaran">Sesuai Sasaran</option>
@@ -425,9 +449,9 @@ th{background:#f1f5ff}
   <div class="table-wrap footer-table">
     <table>
       <tr><th>Program</th><th>Penerima Upah</th><th>Bukan Penerima Upah</th></tr>
-      <tr><td>JKK + JKM</td><td>0,54% Upah</td><td>Rp16.800</td></tr>
-      <tr><td>JHT</td><td>5,7% Upah</td><td>Rp20.000</td></tr>
-      <tr><td>JP</td><td>3% Upah</td><td>-</td></tr>
+      <tr><td>JKK + JKM</td><td>0,54% x Upah</td><td>Rp16.800</td></tr>
+      <tr><td>JHT</td><td>5,7% x Upah</td><td>Rp20.000</td></tr>
+      <tr><td>JP</td><td>3% x Upah</td><td>-</td></tr>
     </table>
   </div>
 
@@ -435,6 +459,7 @@ th{background:#f1f5ff}
   <font size="2px">Catatan <br>
   - Minimal 2 Program Wajib (JKK + JKM) <br>
   - Simulasi JKK yang digunakan adalah 0,24% <br>
+  - Dasar Upah BPU yang digunakan Rp 1.000.000,-<br>
   - Brosur Manfaat Program BPJS Ketenagakerjaan
     <a href="https://drive.google.com/file/d/1JkoL7o6aFq8yeSEdYyYzTttSYZzUFHKf/view?usp=sharing"
        target="_blank" rel="noopener" >
@@ -585,7 +610,8 @@ function hitungSasaran(){
   }
 
   tabel.innerHTML+=`<tr><th colspan="5">TOTAL</th><th>Rp ${format(total)}</th></tr>`;
-  kesimpulan.innerHTML=`Hasil simulasi menunjukkan kebutuhan anggaran sebesar <b>Rp ${format(total)}</b> untuk mendukung perlindungan jaminan sosial ketenagakerjaan sesuai skema yang dipilih.`;
+  kesimpulan.innerHTML=
+  `Hasil simulasi menunjukkan kebutuhan anggaran sebesar <b>Rp ${format(total)}</b> untuk mendukung perlindungan jaminan sosial ketenagakerjaan sesuai skema yang dipilih.`;
   
   let rekapPU = {};
 let rekapBPU = {};
