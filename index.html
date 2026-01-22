@@ -18,8 +18,47 @@
   width: 120px;    /* agak besar */
   height: auto;
 }
+/* baris utama */
+.row-pengguna{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* checkbox tetap sejajar */
+.row-pengguna .checkbox-row{
+  display: flex;
+  gap: 10px;
+}
+
+/* tombol reset kecil & sejajar */
+.btn-reset-inline{
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-top: 0;
+}
+
+
 
 /* ================= MOBILE ================= */
+@media (max-width: 600px){
+  .row-pengguna{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-reset-inline{
+    align-self: flex-end;
+    margin-top: 6px;
+  }
+}
 @media (max-width: 600px) {
   .logo-top-right img {
     width: 90px;   /* sedikit lebih kecil di HP */
@@ -99,24 +138,41 @@ button{
 
 /* ================= CHECKBOX CARD ================= */
 .checkbox-row{
-  display:grid;
-  grid-template-columns:repeat(2, max-content);
+  display: flex;
+  flex-wrap: wrap;
   gap:10px;
-  margin-top:12px;
 }
+
 
 .checkbox-card{
   display:flex;
   align-items:center;
-  gap:10px;
-  padding:12px 14px;
-  border-radius:12px;
-  border:1.5px solid #d6dbe3;
+  gap:8px;
+  padding:8px 10px;      /* ⬅️ lebih kecil */
+  border-radius:10px;
+  border:1.3px solid #d6dbe3;
   background:#f8f9fb;
   cursor:pointer;
   transition:.2s ease;
-  font-size:13px;  
+  font-size:12px;        /* ⬅️ lebih kecil */
 }
+
+.checkbox-card{
+  width: fit-content;          /* ⬅️ kunci utama */
+  min-width: unset;
+}
+.sektor-bpu .checkbox-card{
+  width: fit-content;
+  padding:6px 10px;
+  font-size:12px;
+}
+
+
+.checkbox-card input{
+  width:16px;
+  height:16px;
+}
+
 
 .checkbox-card input{
   width:18px;
@@ -136,6 +192,23 @@ button{
   opacity:.45;
   cursor:not-allowed;
 }
+/* khusus sektor BPU: 1 baris kiri-kanan */
+.sektor-bpu{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;        /* ⬅️ jangan turun baris */
+  gap: 12px;
+  align-items: center;
+}
+
+/* kecil & rapi */
+.sektor-bpu .checkbox-card{
+  width: fit-content;
+  padding: 6px 12px;
+  font-size: 12px;
+  white-space: nowrap;      /* ⬅️ cegah teks turun */
+}
+
 
 /* ================= TABLE ================= */
 .table-wrap{overflow-x:auto}
@@ -241,6 +314,14 @@ th{background:#f1f5ff}
     padding:6px;
   }
   
+  @media(max-width:600px){
+  .checkbox-card{
+    padding:7px 9px;
+    font-size:11px;
+  }
+}
+
+  
 
  .footer h4{
   margin-bottom:6px;
@@ -321,6 +402,11 @@ th{background:#f1f5ff}
     display: flex !important;
   }
 }
+@media print {
+  body.perusahaan-mode #rekapProgram {
+    display: none !important;
+  }
+}
 
 
 </style>
@@ -336,11 +422,41 @@ th{background:#f1f5ff}
 <h2>Simulasi Penganggaran Iuran Jaminan Sosial Ketenagakerjaan</h2>
 <p style="text-align: justify"><font size="2px">Simulasi ini dapat digunakan oleh Pemerintah Daerah
 	untuk membantu perencanaan dan estimasi kebutuhan anggaran perlindungan
-	Jaminan Sosial Ketenagakerjaan berdasarkan jenis sasaran, jumlah peserta,
-	lama perlindungan, dan program yang dipilih. Dapat digunakan juga oleh Perusahaan untuk ikut serta dalam Program Sejahterakan Pekerja Sekitar Anda (SERTAKAN).
- </font></p
-<!-- ================= METODE ================= -->
+	Jaminan Sosial Ketenagakerjaan. Dapat digunakan juga oleh Perusahaan untuk ikut serta dalam Program Sejahterakan Pekerja Sekitar Anda (SERTAKAN).
+ </font></p>
+ 
+<!-- ================= TUJUAN SIMULASI ================= -->
 <div class="section">
+<div class="row-pengguna">
+
+  <div class="checkbox-row">
+    <div class="checkbox-card" id="cardPemda">
+      <input type="checkbox" id="tujuanPemda">
+      Pemerintah Daerah
+    </div>
+
+    <div class="checkbox-card" id="cardPerusahaan">
+      <input type="checkbox" id="tujuanPerusahaan">
+      Perusahaan
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="btn-reset-inline"
+    onclick="resetSimulasi()">
+    Reset
+  </button>
+
+</div>
+
+</div>
+
+
+ 
+ 
+<!-- ================= METODE ================= -->
+<div class="section hidden" id="boxMetode">
   <label><b>Metode Simulasi</b></label>
   <select id="metode">
     <option value="">-- Pilih Metode --</option>
@@ -348,6 +464,78 @@ th{background:#f1f5ff}
     <option value="anggaran">Sesuai Ketersediaan Anggaran</option>
   </select>
 </div>
+
+<!-- ================= PERUSAHAAN ================= -->
+<div id="boxPerusahaan" class="section hidden">
+ <h4>Sejahterakan Pekerja Sekitar Anda (SERTAKAN)</h4>
+<p style="text-align: justify"><font size="2px">Sesuai Peraturan Pemerintah Nomor 50 Tahun 2025, Pemerintah memberikan 
+<b>Relaksasi Iuran JKK-JKM 50%</b> bagi Peserta Baru dan Peserta Lanjutan segmen Bukan Penerima Upah (tidak termasuk bagi peserta BPU
+yang iurannya bersumber dari APBN/APBD).
+<br> - Pekerja BPU Sektor Transportasi - <b>Periode Januari 2026 s/d Maret 2027</b>
+<br> - Pekerja BPU Sektor Non Transportasi - <b>Periode April 2026 s/d Desember 2026</b>
+
+</font></p>
+ 
+  <!-- SEKTOR BPU (PP 50/2025) -->
+  <div id="boxSektorBPU">
+    <h4>Pilih Sektor Pekerjaan BPU</h4>
+
+   <div class="checkbox-row sektor-bpu">
+
+  <div class="checkbox-card" id="cardTransport">
+    <input type="radio" name="sektorBPU" id="sektorTransport">
+    Transportasi (Ojek, Sopir, Kurir, dll)
+  </div>
+
+  <div class="checkbox-card" id="cardNonTransport">
+    <input type="radio" name="sektorBPU" id="sektorNonTransport">
+    Non Transportasi (Guru, Petani, Nelayan, Pedagang, dll)
+  </div>
+
+</div>
+
+  </div>
+
+  <!-- BULAN MULAI PERLINDUNGAN -->
+<div id="boxBulanMulai" class="hidden">
+  <label>Bulan Mulai Perlindungan</label>
+  <select id="bulanMulai">
+    <option value="">-- Pilih Bulan --</option>
+    <option value="2026-01">Jan 2026</option>
+    <option value="2026-02">Feb 2026</option>
+    <option value="2026-03">Mar 2026</option>
+    <option value="2026-04">Apr 2026</option>
+    <option value="2026-05">Mei 2026</option>
+    <option value="2026-06">Jun 2026</option>
+    <option value="2026-07">Jul 2026</option>
+    <option value="2026-08">Agu 2026</option>
+    <option value="2026-09">Sep 2026</option>
+    <option value="2026-10">Okt 2026</option>
+    <option value="2026-11">Nov 2026</option>
+    <option value="2026-12">Des 2026</option>
+  </select>
+</div>
+
+<!-- LAMA PERLINDUNGAN -->
+<div id="boxLamaPerlindungan" class="hidden">
+  <label>Lama Perlindungan (bulan)</label>
+  <input type="number" id="lamaPerlindungan" min="1" value="3">
+</div>
+
+<!-- JUMLAH PEKERJA PERUSAHAAN -->
+<div id="boxOrgPerusahaan" class="hidden">
+  <label>Jumlah Pekerja yang Dilindungi</label>
+  <input type="text" id="orgPerusahaan" class="input-number" value="100">
+</div>
+<button onclick="hitungPerusahaan()"
+        id="btnHitungPerusahaan"
+        class="hidden">
+  Hitung
+</button>
+
+</div>
+
+
 
 <!-- ================= SASARAN ================= -->
 <div id="boxSasaran" class="section hidden">
@@ -393,8 +581,7 @@ th{background:#f1f5ff}
   </div>
 
   <button onclick="hitungSasaran()">Hitung</button>
-  <button type="button" class="btn-reset" onclick="resetSimulasi()">Reset</button>
-
+  
 </div>
 
 <!-- ================= ANGGARAN ================= -->
@@ -452,7 +639,7 @@ th{background:#f1f5ff}
   </div>
 
   <button onclick="hitungAnggaran()">Hitung</button>
-  <button type="button" class="btn-reset" onclick="resetSimulasi()">Reset</button>
+  
 </div>
 
 <!-- ================= HASIL ================= -->
@@ -509,15 +696,17 @@ th{background:#f1f5ff}
   </div>
 
 <p class="Catatan">
-  <font size="1px">Catatan <br>
-  - Minimal 2 Program Wajib (JKK + JKM) <br>
+  <font size="1,5px">Keterangan : <br>
+  - Jaminan Kecelakaan Kerja (JKK) | Jaminan Kematian (JKM) | Jaminan Hari Tua (JHT) | Jaminan Pensiun (JP) <br>
+  - 2 Program (JKK, JKM) | 3 Program (JKK, JKM, JHT) | 4 Program (JKK, JKM, JHT, JP) <br>
   - Simulasi JKK yang digunakan adalah rate 0,24% <br>
   - Dasar Upah BPU yang digunakan Rp 1.000.000,-<br>
+  - Minimal 2 Program Wajib (JKK + JKM) <br>
   - Brosur Manfaat Program BPJS Ketenagakerjaan
     <a href="https://drive.google.com/file/d/1JkoL7o6aFq8yeSEdYyYzTttSYZzUFHKf/view?usp=sharing"
        target="_blank" rel="noopener" >
-      (Download)
-    </a>  
+      (Download) </a>  
+    
   </font><br>
   
   
@@ -530,7 +719,157 @@ th{background:#f1f5ff}
 </div>
 
 <script>
-/* ================= UTIL ================= */
+
+/* ================= INIT DOM ================= */
+const boxBulanMulai = document.getElementById('boxBulanMulai');
+const boxLamaPerlindungan = document.getElementById('boxLamaPerlindungan');
+const bulanMulai = document.getElementById('bulanMulai');
+const lamaPerlindungan = document.getElementById('lamaPerlindungan');
+const boxOrgPerusahaan = document.getElementById('boxOrgPerusahaan');
+const orgPerusahaan = document.getElementById('orgPerusahaan');
+
+const cardPemda = document.getElementById('cardPemda');
+const cardPerusahaan = document.getElementById('cardPerusahaan');
+const tujuanPemda = document.getElementById('tujuanPemda');
+const tujuanPerusahaan = document.getElementById('tujuanPerusahaan');
+
+const boxMetode = document.getElementById('boxMetode');
+const metode = document.getElementById('metode');
+const hasil = document.getElementById('hasil');
+
+/* ================= AUTO BIND DOM LENGKAP ================= */
+const btnHitungPerusahaan = document.getElementById('btnHitungPerusahaan');
+const boxSektorBPU = document.getElementById('boxSektorBPU');
+const sektorTransport = document.getElementById('sektorTransport');
+const sektorNonTransport = document.getElementById('sektorNonTransport');
+const cardTransport = document.getElementById('cardTransport');
+const cardNonTransport = document.getElementById('cardNonTransport');
+
+// === EVENT SEKTOR → tampilkan input lanjutan ===
+sektorTransport.addEventListener('change', () => {
+  boxBulanMulai.classList.remove('hidden');
+  boxLamaPerlindungan.classList.remove('hidden');
+  boxOrgPerusahaan.classList.remove('hidden');
+  cekReadyHitungPerusahaan();
+});
+
+sektorNonTransport.addEventListener('change', () => {
+  boxBulanMulai.classList.remove('hidden');
+  boxLamaPerlindungan.classList.remove('hidden');
+  boxOrgPerusahaan.classList.remove('hidden');
+  cekReadyHitungPerusahaan();
+});
+
+let sektorBPU = null; // 'transport' | 'nontransport'
+const cardPU = document.getElementById('cardPU');
+const cardBPU = document.getElementById('cardBPU');
+const sasaranNonASN = document.getElementById('sasaranNonASN');
+const sasaranBPU = document.getElementById('sasaranBPU');
+
+const jhtSNon = document.getElementById('jhtSNon');
+const jpSNon  = document.getElementById('jpSNon');
+const jhtSBPU = document.getElementById('jhtSBPU');
+
+const cardJHTPU = document.getElementById('cardJHTPU');
+const cardJPPU  = document.getElementById('cardJPPU');
+const cardJHTBPU = document.getElementById('cardJHTBPU');
+
+const cardPUA = document.getElementById('cardPUA');
+const cardBPUA = document.getElementById('cardBPUA');
+const angNonASN = document.getElementById('angNonASN');
+const angBPU = document.getElementById('angBPU');
+
+const jhtA = document.getElementById('jhtA');
+const jpA  = document.getElementById('jpA');
+const jhtB = document.getElementById('jhtB');
+
+const cardJHTA = document.getElementById('cardJHTA');
+const cardJPA  = document.getElementById('cardJPA');
+const cardJHTBA = document.getElementById('cardJHTBA');
+
+const tujuan = document.getElementById('tujuan');
+const lblOrgA = document.getElementById('lblOrgA');
+const lblOrgB = document.getElementById('lblOrgB');
+const lblBlnA = document.getElementById('lblBlnA');
+const lblBlnB = document.getElementById('lblBlnB');
+const orgA = document.getElementById('orgA');
+const orgB = document.getElementById('orgB');
+const blnA = document.getElementById('blnA');
+const blnB = document.getElementById('blnB');
+
+const boxPerusahaan = document.getElementById('boxPerusahaan');
+
+
+
+
+
+/* ================= TUJUAN SIMULASI ================= */
+let modeTujuan = ''; // 'pemda' | 'perusahaan'
+
+function setTujuan(tipe){
+
+ resetFlow(); // ⬅️ INI KUNCI NYA
+
+
+  if(tipe === 'pemda'){
+    tujuanPemda.checked = true;
+    tujuanPerusahaan.checked = false;
+    modeTujuan = 'pemda';
+
+    cardPemda.classList.add('active');
+    cardPerusahaan.classList.remove('active');
+  }
+
+  if(tipe === 'perusahaan'){
+    tujuanPerusahaan.checked = true;
+    tujuanPemda.checked = false;
+    modeTujuan = 'perusahaan';
+
+    cardPerusahaan.classList.add('active');
+    cardPemda.classList.remove('active');
+  }
+
+  // METODE → hanya PEMDA
+  if(tipe === 'pemda'){
+    boxMetode.classList.remove('hidden');
+  }else{
+    boxMetode.classList.add('hidden');
+  }
+
+  // BOX PERUSAHAAN
+  if(tipe === 'perusahaan'){
+    boxPerusahaan.classList.remove('hidden');
+  }else{
+    boxPerusahaan.classList.add('hidden');
+  }
+
+  hasil.classList.add('hidden');
+  metode.value = '';
+
+  console.log('MODE:', modeTujuan);
+}
+
+// 4. FUNGSI KHUSUS PERUSAHAAN
+// ============================
+
+
+
+// DEFAULT MODE = PEMDA
+setTujuan('pemda');
+cardPemda.onclick = () => setTujuan('pemda');
+cardPerusahaan.onclick = () => setTujuan('perusahaan');
+
+tujuanPemda.onclick = e => {
+  e.stopPropagation();
+  setTujuan('pemda');
+};
+
+tujuanPerusahaan.onclick = e => {
+  e.stopPropagation();
+  setTujuan('perusahaan');
+};
+
+
 const format=n=>Number(n||0).toLocaleString('id-ID');
 const getNum=id=>parseInt(document.getElementById(id).value.replace(/\./g,''))||0;
 
@@ -544,13 +883,19 @@ document.addEventListener('input',e=>{
 
 /* ================= METODE ================= */
 metode.onchange=()=>{
+ if(modeTujuan !== 'pemda'){
+    alert('Metode ini hanya untuk Pemerintah Daerah');
+    metode.value = '';
+    return;
+  }
+
   boxSasaran.classList.add('hidden');
   boxAnggaran.classList.add('hidden');
   hasil.classList.add('hidden');
-  if(metode.value==='sasaran')boxSasaran.classList.remove('hidden');
-  if(metode.value==='anggaran')boxAnggaran.classList.remove('hidden');
-};
 
+  if(metode.value === 'sasaran') boxSasaran.classList.remove('hidden');
+  if(metode.value === 'anggaran') boxAnggaran.classList.remove('hidden');
+};
 /* ================= TOGGLE SASARAN ================= */
 s_nonasn.onchange=()=>{
   cardPU.classList.toggle('active',s_nonasn.checked);
@@ -608,6 +953,39 @@ tujuan.onchange=()=>{
   lblBlnB.style.display=orang?'none':'block';
   blnB.style.display=orang?'none':'block';
 };
+function resetFlow(){
+
+  // reset metode
+  metode.value = '';
+  boxSasaran.classList.add('hidden');
+  boxAnggaran.classList.add('hidden');
+
+  // reset sasaran PEMDA
+  s_nonasn.checked = false;
+  s_bpu.checked = false;
+  cardPU.classList.remove('active');
+  cardBPU.classList.remove('active');
+  sasaranNonASN.classList.add('hidden');
+  sasaranBPU.classList.add('hidden');
+
+  // reset anggaran PEMDA
+  a_nonasn.checked = false;
+  a_bpu.checked = false;
+  cardPUA.classList.remove('active');
+  cardBPUA.classList.remove('active');
+  angNonASN.classList.add('hidden');
+  angBPU.classList.add('hidden');
+
+  // reset hasil
+  hasil.classList.add('hidden');
+  document.getElementById('printArea').classList.add('hidden');
+
+  // reset rekap
+  
+  rekapProgram.classList.add('hidden');
+  tabel.innerHTML = tabel.rows[0].outerHTML;
+  tabelRekap.innerHTML = tabelRekap.rows[0].outerHTML;
+}
 
 /* ================= HITUNG ================= */
 
@@ -620,7 +998,12 @@ function hitungJumlahProgram({ jht=false, jp=false }){
 
 
 function hitungSasaran(){
-  
+   if(modeTujuan !== 'pemda'){
+    alert('Simulasi sasaran ini hanya untuk Pemerintah Daerah');
+    return;
+  }
+
+  console.log('MODE:', modeTujuan);
   tabel.innerHTML=tabel.rows[0].outerHTML;
   let total=0;
 
@@ -663,9 +1046,17 @@ function hitungSasaran(){
   }
 
   tabel.innerHTML+=`<tr><th colspan="5">TOTAL</th><th>Rp ${format(total)}</th></tr>`;
-  kesimpulan.innerHTML=
-  `Hasil simulasi menunjukkan kebutuhan anggaran sebesar <b>Rp ${format(total)}</b> untuk mendukung perlindungan jaminan sosial ketenagakerjaan sesuai skema yang dipilih.`;
   
+  
+  let totalOrang = 0;
+if(s_nonasn.checked) totalOrang += getNum('orgSNon');
+if(s_bpu.checked)    totalOrang += getNum('orgSBPU');
+
+kesimpulan.innerHTML =
+`Hasil simulasi menunjukkan kebutuhan anggaran sebesar 
+<b>Rp ${format(total)}</b> untuk perlindungan 
+<b>${format(totalOrang)} </b> peserta program jaminan sosial ketenagakerjaan 
+sesuai skema yang dipilih.`;
   let rekapPU = {};
 let rekapBPU = {};
 
@@ -705,6 +1096,12 @@ tampilkanRekap({ pu: rekapPU, bpu: rekapBPU });
 
 function hitungAnggaran(){
 
+  if(modeTujuan !== 'pemda'){
+    alert('Simulasi anggaran ini hanya untuk Pemerintah Daerah');
+    return;
+  }
+
+  console.log('MODE:', modeTujuan);
   tabel.innerHTML = tabel.rows[0].outerHTML;
   let ang = getNum('totalAnggaran');
   let bagian = (a_nonasn.checked && a_bpu.checked) ? ang/2 : ang;
@@ -836,6 +1233,166 @@ tabel.innerHTML += `
 
 }
 
+function hitungPerusahaan(){
+
+  if(modeTujuan !== 'perusahaan'){
+    alert('Mode perusahaan belum dipilih');
+    return;
+  }
+
+
+  // pastikan sektor dipilih
+  let sektor = null;
+  if(sektorTransport.checked) sektor = 'transport';
+  if(sektorNonTransport.checked) sektor = 'nontransport';
+
+  if(!sektor){
+    alert('Pilih sektor pekerjaan BPU');
+    return;
+  }
+
+  // pastikan bulan mulai & lama dipilih
+  if(!bulanMulai.value){
+    alert('Pilih bulan mulai perlindungan');
+    return;
+  }
+
+  let lama = parseInt(lamaPerlindungan.value);
+  if(!lama || lama < 1){
+    alert('Isi lama perlindungan');
+    return;
+  }
+
+  
+
+  // ====== PERHITUNGAN ======
+  let org = getNum('orgPerusahaan');
+if(!org || org < 1) org = 1;
+ let tarifJKKJKM_Normal = 16800;
+let tarifJKKJKM_Diskon = 8400; // 50%
+
+let tarifJHT = jhtSBPU.checked ? 20000 : 0;
+
+let total = 0;
+
+let totalNormal = 0;
+let totalDiskon = 0;
+let bulanNormal = 0;
+let bulanDiskon = 0;
+
+// hitung per bulan
+for(let i=0; i<lama; i++){
+
+  // tentukan tanggal bulan ke-i
+  let tgl = new Date(bulanMulai.value + '-01');
+  tgl.setMonth(tgl.getMonth() + i);
+
+  let tarifJKKJKM = tarifJKKJKM_Normal; // default normal
+
+  // === CEK PERIODE DISKON ===
+  if(sektor === 'transport'){
+    if(tgl >= new Date('2026-01-01') && tgl <= new Date('2027-03-31')){
+      tarifJKKJKM = tarifJKKJKM_Diskon;
+    }
+  }
+
+  if(sektor === 'nontransport'){
+    if(tgl >= new Date('2026-04-01') && tgl <= new Date('2026-12-31')){
+      tarifJKKJKM = tarifJKKJKM_Diskon;
+    }
+  }
+
+  let tarifBulanIni = tarifJKKJKM + tarifJHT;
+let subtotal = tarifBulanIni * org;
+
+total += subtotal;
+
+// === REKAP KONDISI ===
+if(tarifJKKJKM === tarifJKKJKM_Diskon){
+  totalDiskon += subtotal;
+  bulanDiskon++;
+}else{
+  totalNormal += subtotal;
+  bulanNormal++;
+}
+}
+
+
+  // ====== TAMPILKAN HASIL ======
+  tabel.innerHTML = `
+    <tr>
+      <th>Kategori</th>
+      <th>Jumlah Orang</th>
+      <th>Jumlah Bulan</th>
+      <th>Jumlah Program</th>
+      <th>Iuran / Bulan</th>
+      <th>Total Iuran</th>
+    </tr>
+
+   ${bulanNormal > 0 ? `
+<tr>
+  <td>Iuran Normal</td>
+  <td>${format(org)}</td>
+  <td>${format(bulanNormal)}</td>
+  <td>${jhtSBPU.checked ? '3P' : '2P'}</td>
+  <td>Rp ${format((totalNormal / (org * bulanNormal)).toFixed(0))}</td>
+  <td>Rp ${format(totalNormal)}</td>
+</tr>` : ''}
+
+${bulanDiskon > 0 ? `
+<tr>
+  <td>Iuran Relaksasi 50%</td>
+  <td>${format(org)}</td>
+  <td>${format(bulanDiskon)}</td>
+  <td>${jhtSBPU.checked ? '3P' : '2P'}</td>
+  <td>Rp ${format((totalDiskon / (org * bulanDiskon)).toFixed(0))}</td>
+  <td>Rp ${format(totalDiskon)}</td>
+</tr>` : ''}
+
+<tr>
+  <th colspan="5">TOTAL</th>
+  <th>Rp ${format(total)}</th>
+</tr>
+  `;
+
+  kesimpulan.innerHTML =
+`Simulasi SERTAKAN untuk ${format(org)} pekerja selama ${lama} bulan:
+<ul>
+<li>${bulanNormal} bulan iuran normal → Rp ${format(totalNormal)}</li>
+<li>${bulanDiskon} bulan iuran relaksasi 50% → Rp ${format(totalDiskon)}</li>
+</ul>
+<b>Total iuran yang dianggarkan: Rp ${format(total)}</b>`;
+
+rekapProgram.classList.add('hidden');
+  hasil.classList.remove('hidden');
+  document.getElementById('printArea').classList.remove('hidden');
+}
+
+function cekReadyHitungPerusahaan(){
+  if(modeTujuan !== 'perusahaan') return;
+
+
+  // sektor dipilih
+  let sektorOK = sektorTransport.checked || sektorNonTransport.checked;
+
+  // bulan mulai terisi
+  let bulanOK = bulanMulai.value !== '';
+
+  // lama valid
+  let lamaOK = lamaPerlindungan.value !== '' && parseInt(lamaPerlindungan.value) > 0;
+	let orgOK = orgPerusahaan.value !== '' && getNum('orgPerusahaan') > 0;
+
+  if(sektorOK && bulanOK && lamaOK && orgOK){
+    btnHitungPerusahaan.classList.remove('hidden');
+  }else{
+    btnHitungPerusahaan.classList.add('hidden');
+  }
+}
+// setiap input berubah → cek tombol
+sektorTransport.onchange = cekReadyHitungPerusahaan;
+sektorNonTransport.onchange = cekReadyHitungPerusahaan;
+bulanMulai.onchange = cekReadyHitungPerusahaan;
+lamaPerlindungan.oninput = cekReadyHitungPerusahaan;
 function tampilkanRekap({pu = {}, bpu = {}}){
 
   const hasPU  = Object.keys(pu).length > 0;
@@ -888,7 +1445,14 @@ function tampilkanRekap({pu = {}, bpu = {}}){
 
 function printHasil(){
   document.getElementById('hasil').classList.remove('hidden');
-  document.getElementById('rekapProgram').classList.remove('hidden');
+
+  // 🔹 Rekap hanya ditampilkan jika mode PEMDA
+  if(modeTujuan === 'pemda'){
+    document.getElementById('rekapProgram').classList.remove('hidden');
+  }else{
+    document.getElementById('rekapProgram').classList.add('hidden');
+  }
+
   window.print();
 }
 function resetSimulasi(){
