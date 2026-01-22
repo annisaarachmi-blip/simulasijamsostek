@@ -39,26 +39,35 @@
   border: none;
   border-radius: 10px;
   padding: 8px 14px;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   white-space: nowrap;
   margin-top: 0;
+
 }
 
 
 
 /* ================= MOBILE ================= */
-@media (max-width: 600px){
+
+@media (max-width:600px){
   .row-pengguna{
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:8px;
+  }
+
+  .row-pengguna .checkbox-row{
+    width:100%;
   }
 
   .btn-reset-inline{
-    align-self: flex-end;
-    margin-top: 6px;
+    align-self:flex-start; /* 🔹 reset di bawah kiri */
+    margin-top:0;
   }
 }
+
+
 @media (max-width: 600px) {
   .logo-top-right img {
     width: 90px;   /* sedikit lebih kecil di HP */
@@ -408,6 +417,33 @@ th{background:#f1f5ff}
   }
 }
 
+/* ===== SEKTOR BPU DESKTOP ===== */
+.sektor-bpu{
+  display:flex;
+  flex-wrap:nowrap;       /* desktop 1 baris */
+  gap:12px;
+  align-items:center;
+}
+
+.sektor-bpu .checkbox-card{
+  white-space:nowrap;
+  padding:6px 12px;
+  font-size:12px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:600px){
+  .sektor-bpu{
+    flex-wrap:wrap;        /* mobile turun baris */
+  }
+  .sektor-bpu .checkbox-card{
+    width:100%;           /* full lebar per baris */
+    justify-content:flex-start;
+    font-size:11px;
+  }
+}
+
+
 
 </style>
 </head>
@@ -422,7 +458,7 @@ th{background:#f1f5ff}
 <h2>Simulasi Penganggaran Iuran Jaminan Sosial Ketenagakerjaan</h2>
 <p style="text-align: justify"><font size="2px">Simulasi ini dapat digunakan oleh Pemerintah Daerah
 	untuk membantu perencanaan dan estimasi kebutuhan anggaran perlindungan
-	Jaminan Sosial Ketenagakerjaan. Dapat digunakan juga oleh Perusahaan untuk ikut serta dalam Program Sejahterakan Pekerja Sekitar Anda (SERTAKAN).
+	Jaminan Sosial Ketenagakerjaan bagi a Rentan. Dapat digunakan juga oleh Perusahaan untuk ikut serta dalam Program Sejahterakan Pekerja Sekitar Anda (SERTAKAN) segmen Bukan Penerima Upah (BPU).
  </font></p>
  
 <!-- ================= TUJUAN SIMULASI ================= -->
@@ -439,16 +475,15 @@ th{background:#f1f5ff}
       <input type="checkbox" id="tujuanPerusahaan">
       Perusahaan
     </div>
-  </div>
-
   <button
     type="button"
     class="btn-reset-inline"
     onclick="resetSimulasi()">
     Reset
   </button>
+  </div>
 
-</div>
+  </div>
 
 </div>
 
@@ -467,9 +502,9 @@ th{background:#f1f5ff}
 
 <!-- ================= PERUSAHAAN ================= -->
 <div id="boxPerusahaan" class="section hidden">
- <h4>Sejahterakan Pekerja Sekitar Anda (SERTAKAN)</h4>
+ <h4>Sejahterakan Pekerja Sekitar Anda (SERTAKAN) </h4>
 <p style="text-align: justify"><font size="2px">Sesuai Peraturan Pemerintah Nomor 50 Tahun 2025, Pemerintah memberikan 
-<b>Relaksasi Iuran JKK-JKM 50%</b> bagi Peserta Baru dan Peserta Lanjutan segmen Bukan Penerima Upah (tidak termasuk bagi peserta BPU
+<b>Relaksasi Iuran JKK-JKM 50%</b> bagi Peserta Baru dan Peserta Lanjutan segmen BPU (tidak termasuk bagi peserta BPU
 yang iurannya bersumber dari APBN/APBD).
 <br> - Pekerja BPU Sektor Transportasi - <b>Periode Januari 2026 s/d Maret 2027</b>
 <br> - Pekerja BPU Sektor Non Transportasi - <b>Periode April 2026 s/d Desember 2026</b>
@@ -489,7 +524,7 @@ yang iurannya bersumber dari APBN/APBD).
 
   <div class="checkbox-card" id="cardNonTransport">
     <input type="radio" name="sektorBPU" id="sektorNonTransport">
-    Non Transportasi (Guru, Petani, Nelayan, Pedagang, dll)
+    Non Transportasi (Petani, Nelayan, Pedagang, dll)
   </div>
 
 </div>
